@@ -15,7 +15,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Faustina:ital,wght@0,400..700;1,400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Faustina:ital,wght@0,400..700;1,400..600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
 /* ===========================================================
@@ -34,6 +34,7 @@
   --line:#dddED9;
   --gray:#767676;
   --ink:#1e3932;
+  --display:"Space Grotesk", Figtree, ui-sans-serif, sans-serif;  /* the wordmark */
   --ease:cubic-bezier(.64,.04,.35,1);
   --pill:12.5rem;
   --card:1.25rem;
@@ -87,6 +88,7 @@ a{color:inherit}
   *{animation:none!important; transition:none!important}
   [data-rise]{opacity:1; transform:none}
   .curtain>span{transform:none}
+  .hero-hours{opacity:1; transform:none}
 }
 
 /* ===========================================================
@@ -119,7 +121,8 @@ a{color:inherit}
 .bar-in{display:flex; align-items:center; gap:1.5rem; height:4.25rem}
 .bar-mark{
   display:inline-flex; align-items:center; gap:.55rem;
-  font-weight:800; letter-spacing:-.03em; font-size:1.25rem;
+  font-family:var(--display);
+  font-weight:700; letter-spacing:-.03em; font-size:1.25rem;
   color:var(--house); text-decoration:none;
 }
 .bar-mark .seal{
@@ -170,13 +173,14 @@ a{color:inherit}
 }
 .rings{
   position:absolute; z-index:-1; right:clamp(-16rem,-8vw,-5rem); top:50%;
-  width:clamp(22rem,46vw,38rem); aspect-ratio:1; translate:0 -50%;
-  color:var(--mint); opacity:.18; pointer-events:none;
+  width:clamp(22rem,42vw,34rem); aspect-ratio:1; translate:0 -50%;
+  color:var(--mint); opacity:.12; pointer-events:none;
   animation:drift 120s linear infinite;
 }
 .hero h1{
-  font-size:clamp(3rem,11.5vw,6.2rem); font-weight:800;
-  letter-spacing:-.05em; line-height:.9;
+  font-family:var(--display);
+  font-size:clamp(3rem,9.5vw,5.4rem); font-weight:700;
+  letter-spacing:-.045em; line-height:.9;
 }
 .hero .place{
   font-family:Faustina,serif; font-style:italic;
@@ -195,6 +199,15 @@ a{color:inherit}
 .bar-status .dot.shut{background:#a8b3ae}
 .live-note{margin-top:.75rem; font-size:.95rem; color:rgba(212,233,226,.85); min-height:1.25rem}
 .hero-cta{display:flex; flex-wrap:wrap; gap:.75rem; margin-top:2.2rem}
+
+/* intro on the left, the hours panel beside it */
+.hero-grid{display:grid; grid-template-columns:minmax(0,1fr) 23rem; gap:3rem 4rem; align-items:center}
+.hero-hours{
+  opacity:0; transform:translateY(1.4rem);
+  transition:opacity .9s var(--ease) .4s, transform .9s var(--ease) .4s;
+}
+.ready .hero-hours{opacity:1; transform:none}
+.hero-hours .eyebrow{margin-bottom:.9rem}
 
 /* ===========================================================
    MINT NOTICE STRIP
@@ -318,34 +331,36 @@ a{color:inherit}
    HOURS
    =========================================================== */
 .hrs{
-  max-width:38rem; margin-top:2.4rem; background:var(--white);
-  border-radius:var(--card); padding:.7rem 1.6rem; box-shadow:0 1px 2px rgba(30,57,50,.05);
+  background:rgba(11,31,26,.42); backdrop-filter:blur(10px);
+  border:1px solid rgba(212,233,226,.22); border-radius:var(--card);
+  padding:.45rem 1.25rem;
 }
 .hrow{
   display:flex; justify-content:space-between; gap:1rem; align-items:center;
-  padding:.9rem .8rem; margin-inline:-.8rem; border-bottom:1px solid var(--line);
-  border-radius:.55rem; transition:background .3s var(--ease);
+  padding:.68rem .65rem; margin-inline:-.65rem; font-size:.95rem;
+  border-bottom:1px solid rgba(212,233,226,.13);
+  border-radius:.5rem; transition:background .3s var(--ease);
 }
 .hrow:last-child{border-bottom:0}
-.hrow:hover{background:var(--cream)}
-.hrow .d{font-weight:500}
-.hrow .t{font-variant-numeric:tabular-nums; color:var(--house); font-weight:600}
-.hrow.today{background:var(--mint-soft); box-shadow:inset .2rem 0 0 var(--green)}
-.hrow.today:hover{background:var(--mint-soft)}
-.hrow.today .d,.hrow.today .t{font-weight:700}
+.hrow:hover{background:rgba(212,233,226,.08)}
+.hrow .d{font-weight:500; color:rgba(255,255,255,.86)}
+.hrow .t{font-variant-numeric:tabular-nums; color:var(--white); font-weight:600}
+.hrow.today{background:rgba(212,233,226,.15); box-shadow:inset .18rem 0 0 var(--mint)}
+.hrow.today:hover{background:rgba(212,233,226,.15)}
+.hrow.today .d,.hrow.today .t{color:var(--white); font-weight:700}
 .hrow.today .d::after{
-  content:"today"; margin-left:.6rem; vertical-align:.08em;
-  background:var(--green); color:var(--white); border-radius:var(--pill);
-  padding:.14rem .6rem; font-size:.68rem; font-weight:700;
+  content:"today"; margin-left:.55rem; vertical-align:.08em;
+  background:var(--mint); color:var(--house); border-radius:var(--pill);
+  padding:.12rem .55rem; font-size:.64rem; font-weight:700;
   text-transform:uppercase; letter-spacing:.1em;
 }
-.caveat{margin-top:1.5rem; max-width:40rem; font-size:1rem}
+.caveat{margin-top:1.1rem; font-size:.92rem; color:rgba(212,233,226,.78)}
 
 /* ===========================================================
    FOOTER
    =========================================================== */
 footer{background:var(--house); color:rgba(255,255,255,.72); margin-top:4.5rem; padding:3.6rem 0 3rem; font-size:.95rem}
-footer h3{color:var(--white); font-size:2rem; font-weight:800; letter-spacing:-.04em}
+footer h3{font-family:var(--display); color:var(--white); font-size:1.9rem; font-weight:700; letter-spacing:-.035em}
 footer p{margin-top:.95rem; max-width:46rem}
 footer .rule{height:1px; background:rgba(212,233,226,.2); margin:2rem 0 1.6rem}
 footer .note{color:rgba(212,233,226,.72)}
@@ -367,6 +382,10 @@ footer .note{color:rgba(212,233,226,.72)}
 /* ===========================================================
    PHONE
    =========================================================== */
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr; gap:2.6rem}
+  .hero-hours{max-width:32rem}
+}
 @media (max-width:900px){
   .blocks{grid-template-columns:1fr}
   .block.wide ul{grid-template-columns:1fr; column-gap:0}
@@ -413,7 +432,8 @@ footer .note{color:rgba(212,233,226,.72)}
     <circle cx="200" cy="200" r="118" stroke-width="1.5"/>
     <circle cx="200" cy="200" r="76" stroke-width="1.5" stroke-dasharray="3 10"/>
   </svg>
-  <div class="wrap">
+  <div class="wrap hero-grid">
+    <div class="hero-intro">
     <p class="eyebrow curtain"><span>Augustana College</span></p>
     <h1 class="curtain"><span>brew</span></h1>
     <p class="place curtain"><span>by the slough</span></p>
@@ -423,6 +443,21 @@ footer .note{color:rgba(212,233,226,.72)}
       <a class="btn light" href="#drinks">See the menu</a>
       <a class="btn outline" href="#bundles">How meal bundles work</a>
     </div>
+    </div>
+
+    <aside class="hero-hours" id="hours">
+      <p class="eyebrow">Hours</p>
+      <div class="hrs">
+      <div class="hrow" data-day="1"><span class="d">Monday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="2"><span class="d">Tuesday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="3"><span class="d">Wednesday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="4"><span class="d">Thursday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="5"><span class="d">Friday</span><span class="t">7:30 am – 5:00 pm</span></div>
+      <div class="hrow" data-day="6"><span class="d">Saturday</span><span class="t">11:00 am – 3:00 pm</span></div>
+      <div class="hrow" data-day="0"><span class="d">Sunday</span><span class="t">11:00 am – 3:00 pm</span></div>
+      </div>
+      <p class="caveat">Hours change over breaks and holidays, so check the screen in the shop before a long walk across campus.</p>
+    </aside>
   </div>
 </header>
 
@@ -564,28 +599,6 @@ footer .note{color:rgba(212,233,226,.72)}
   </div>
 </section>
 
-<!-- ======================= HOURS ======================= -->
-<section class="band" id="hours">
-  <div class="wrap">
-    <div class="band-head" data-rise>
-      <div class="head-copy">
-        <p class="eyebrow">Before you walk over</p>
-        <h2>Hours</h2>
-      </div>
-    </div>
-
-    <div class="hrs" data-rise>
-      <div class="hrow" data-day="1"><span class="d">Monday</span><span class="t">7:30 am – 8:00 pm</span></div>
-      <div class="hrow" data-day="2"><span class="d">Tuesday</span><span class="t">7:30 am – 8:00 pm</span></div>
-      <div class="hrow" data-day="3"><span class="d">Wednesday</span><span class="t">7:30 am – 8:00 pm</span></div>
-      <div class="hrow" data-day="4"><span class="d">Thursday</span><span class="t">7:30 am – 8:00 pm</span></div>
-      <div class="hrow" data-day="5"><span class="d">Friday</span><span class="t">7:30 am – 5:00 pm</span></div>
-      <div class="hrow" data-day="6"><span class="d">Saturday</span><span class="t">11:00 am – 3:00 pm</span></div>
-      <div class="hrow" data-day="0"><span class="d">Sunday</span><span class="t">11:00 am – 3:00 pm</span></div>
-    </div>
-    <p class="caveat note" data-rise>Hours change over breaks and holidays, so check the screen in the shop before a long walk across campus.</p>
-  </div>
-</section>
 
 </main>
 

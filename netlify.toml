@@ -1,0 +1,20 @@
+# Netlify deploy config for Brew by the Slough.
+# The site is a single static file, so there is nothing to build —
+# Netlify just serves the repo root as-is.
+
+[build]
+  publish = "."
+  command = ""
+
+# index.html must never be served stale, or menu and hours edits
+# would keep showing the old page after a deploy.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

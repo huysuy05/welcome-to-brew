@@ -5,203 +5,433 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Brew by the Slough — menu, meal bundles &amp; hours</title>
 <meta name="description" content="Full menu, prices, meal bundle rules and current hours for Brew by the Slough at Augustana College.">
-<meta name="theme-color" content="#79883c">
+<meta name="theme-color" content="#1e3932">
 
 <meta property="og:title" content="Brew by the Slough">
 <meta property="og:description" content="Menu, meal bundles and hours — without waiting for the screen to change.">
 <meta property="og:type" content="website">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2379883c'/%3E%3Cpath d='M7 12h14v7a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6zM21 14h2.5a3.5 3.5 0 0 1 0 7H21' fill='none' stroke='%23fbfcf7' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23006241'/%3E%3Cpath d='M7 12h14v7a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6zM21 14h2.5a3.5 3.5 0 0 1 0 7H21' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Faustina:ital,wght@0,400..700;1,400..600&display=swap" rel="stylesheet">
 
 <style>
 /* ===========================================================
-   TOKENS
+   TOKENS — lifted from the Starbucks house palette
+   House Green #1e3932 · Starbucks Green #006241 · Mint #d4e9e2
+   Cream #f2f0eb · Hairline #dddED9 · Gray #767676
+   House easing curve: cubic-bezier(.64,.04,.35,1)
    =========================================================== */
 :root{
-  --paper:#eef3e5;      /* pastel green field            */
-  --cream:#fbfcf7;
-  --olive:#79883c;      /* the sign green                */
-  --deep:#3d4522;       /* headings                      */
-  --ink:#232a19;
-  --muted:#6d7756;
-  --line:#d3decb;       /* hairlines                     */
-  --forest:#5f6b2e;     /* meal bundles band             */
-  --w:70rem;
+  --house:#1e3932;
+  --green:#006241;
+  --mint:#d4e9e2;
+  --mint-soft:#e9f3ef;
+  --cream:#f2f0eb;
+  --white:#fff;
+  --line:#dddED9;
+  --gray:#767676;
+  --ink:#1e3932;
+  --ease:cubic-bezier(.64,.04,.35,1);
+  --pill:12.5rem;
+  --card:1.25rem;
+  --w:73.125rem;      /* 1170px — the reference grid */
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important; transition:none!important}}
 
 body{
-  margin:0; background:var(--paper); color:var(--ink);
-  font-family:Archivo, ui-sans-serif, system-ui, sans-serif;
-  font-size:1rem; line-height:1.5; -webkit-font-smoothing:antialiased;
+  margin:0; background:var(--cream); color:var(--ink);
+  font-family:Figtree, ui-sans-serif, system-ui, sans-serif;
+  font-size:1rem; line-height:1.5; letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
 }
-h1,h2,h3{margin:0; font-weight:600; line-height:1.05}
+h1,h2,h3{margin:0; font-weight:700; line-height:1.06; letter-spacing:-.02em}
 p,ul{margin:0}
 ul{list-style:none; padding:0}
 a{color:inherit}
-:focus-visible{outline:2.5px solid var(--deep); outline-offset:4px}
+:focus-visible{outline:2.5px solid var(--green); outline-offset:3px; border-radius:.3rem}
 
 .wrap{width:min(100% - 2.6rem, var(--w)); margin-inline:auto}
-.note{font-family:Newsreader, Georgia, serif; font-style:italic; color:var(--muted)}
+.note{font-family:Faustina, Georgia, serif; font-style:italic; color:var(--gray); font-size:1.02em}
+
+/* Pike-style eyebrow: serif, small, wide tracking */
+.eyebrow{
+  font-family:Faustina, Georgia, serif; font-style:normal; font-weight:600;
+  text-transform:uppercase; letter-spacing:.22em; font-size:.78rem;
+  color:var(--green); margin-bottom:.75rem;
+}
+.on-dark .eyebrow{color:var(--mint)}
 
 /* ===========================================================
-   STICKY BAR — carries the live status down the page
+   MOTION — reveal on scroll, curtain wipe, house easing
    =========================================================== */
-.bar{position:sticky; top:0; z-index:30; background:rgba(238,243,229,.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--line)}
-.bar-in{display:flex; align-items:center; gap:1.4rem; height:3.5rem}
-.bar-mark{font-weight:800; letter-spacing:-.02em; font-size:1.15rem; color:var(--deep); text-decoration:none}
-.bar-status{display:flex; align-items:center; gap:.45rem; font-size:.88rem; color:var(--muted); min-width:0}
-.bar-status span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.bar-nav{margin-left:auto; display:flex; gap:1.6rem}
-.bar-nav a{text-decoration:none; font-size:.78rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
-.bar-nav a:hover{color:var(--deep)}
+[data-rise]{opacity:0; transform:translateY(1.75rem); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+[data-rise].in{opacity:1; transform:none}
+
+.curtain{display:block; overflow:hidden; padding-bottom:.08em}
+.curtain>span{display:block; transform:translate3d(0,112%,0); transition:transform 1.05s var(--ease) .12s}
+.ready .curtain>span{transform:none}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(212,233,226,.55)}
+  70%{box-shadow:0 0 0 .55rem rgba(212,233,226,0)}
+  100%{box-shadow:0 0 0 0 rgba(212,233,226,0)}
+}
+@keyframes drift{to{transform:rotate(360deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important; transition:none!important}
+  [data-rise]{opacity:1; transform:none}
+  .curtain>span{transform:none}
+}
 
 /* ===========================================================
-   HERO
+   BUTTONS — fully rounded pills, the reference's signature
    =========================================================== */
-.hero{background:var(--olive); color:var(--cream); padding:3rem 0 2.4rem}
-.hero h1{font-size:clamp(2.9rem,11vw,5.4rem); font-weight:800; letter-spacing:-.045em; line-height:.92}
-.hero .place{font-family:Newsreader,serif; font-style:italic; font-size:clamp(1.1rem,3.5vw,1.4rem); color:rgba(251,252,247,.82); margin-top:.5rem}
-.live{margin-top:1.9rem; display:flex; align-items:center; gap:.7rem; font-size:clamp(1.15rem,4vw,1.5rem); font-weight:500}
-.dot{width:.6rem; height:.6rem; border-radius:50%; background:var(--cream); flex:none; animation:pulse 2.6s ease-out infinite}
-.dot.shut{background:#cfd2bd; opacity:.7; animation:none}
-@keyframes pulse{70%{box-shadow:0 0 0 .5rem rgba(251,252,247,0)} 100%{box-shadow:0 0 0 0 rgba(251,252,247,0)}}
-.live-note{margin-top:.45rem; font-size:.95rem; color:rgba(251,252,247,.75)}
+.btn{
+  display:inline-flex; align-items:center; gap:.45rem;
+  border-radius:var(--pill); padding:.7rem 1.35rem;
+  font-size:.92rem; font-weight:600; letter-spacing:.01em;
+  text-decoration:none; cursor:pointer;
+  background:var(--green); color:var(--white); border:1.5px solid var(--green);
+  transition:all .3s var(--ease);
+}
+.btn:hover{background:var(--house); border-color:var(--house)}
+.btn.light{background:var(--white); color:var(--house); border-color:var(--white)}
+.btn.light:hover{background:var(--mint); border-color:var(--mint)}
+.btn.outline{background:transparent; color:var(--white); border-color:rgba(212,233,226,.45)}
+.btn.outline:hover{background:rgba(212,233,226,.14); border-color:var(--mint)}
 
 /* ===========================================================
-   TOP NOTICE — mirrors the reference's availability line
+   STICKY BAR
    =========================================================== */
-.notice{border-bottom:1px solid var(--line); padding:1.4rem 0}
-.notice p{font-size:1.02rem; max-width:52rem}
+.bar{
+  position:sticky; top:0; z-index:30;
+  background:rgba(255,255,255,.86); backdrop-filter:blur(14px) saturate(1.4);
+  border-bottom:1px solid transparent;
+  transition:box-shadow .4s var(--ease), border-color .4s var(--ease), background .4s var(--ease);
+}
+.bar.stuck{border-bottom-color:var(--line); box-shadow:0 4px 34px rgba(30,57,50,.08)}
+.bar-in{display:flex; align-items:center; gap:1.5rem; height:4.25rem}
+.bar-mark{
+  display:inline-flex; align-items:center; gap:.55rem;
+  font-weight:800; letter-spacing:-.03em; font-size:1.25rem;
+  color:var(--house); text-decoration:none;
+}
+.bar-mark .seal{
+  width:2rem; height:2rem; border-radius:50%; flex:none;
+  background:var(--green); color:var(--white);
+  display:grid; place-items:center;
+  transition:transform .4s var(--ease), background .3s var(--ease);
+}
+.bar-mark:hover .seal{transform:rotate(-12deg) scale(1.06); background:var(--house)}
+
+.bar-status{
+  display:inline-flex; align-items:center; gap:.5rem; min-width:0;
+  font-size:.82rem; font-weight:600; color:var(--house);
+  background:var(--mint-soft); border:1px solid var(--mint);
+  border-radius:var(--pill); padding:.35rem .85rem .35rem .7rem;
+}
+.bar-status span:last-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
+.bar-nav{margin-left:auto; display:flex; align-items:center; gap:2rem}
+.bar-nav a{
+  position:relative; text-decoration:none;
+  font-size:.86rem; font-weight:600; color:var(--house); padding-block:.35rem;
+  transition:color .3s var(--ease);
+}
+.bar-nav a::after{
+  content:""; position:absolute; left:0; bottom:0;
+  height:.125rem; width:0; background:var(--green);
+  transition:width .3s var(--ease);
+}
+.bar-nav a:hover::after,.bar-nav a.here::after{width:100%}
+.bar-nav a:hover,.bar-nav a.here{color:var(--green)}
+/* the pill is a button, not a text link — keep it out of the link styling */
+.bar-nav a.btn,.bar-nav a.btn:hover,.bar-nav a.btn.here{color:var(--white)}
+.bar-nav a.btn::after{display:none}
+
+/* ===========================================================
+   HERO — House Green with the drifting ring motif
+   =========================================================== */
+.hero{
+  position:relative; overflow:hidden; isolation:isolate;
+  background:var(--house); color:var(--white);
+  padding:clamp(3.4rem,9vw,6rem) 0 clamp(3rem,7vw,4.6rem);
+}
+.hero::before{
+  content:""; position:absolute; z-index:-2;
+  right:-16rem; top:-18rem; width:48rem; height:48rem; border-radius:50%;
+  background:radial-gradient(circle at 34% 32%, rgba(212,233,226,.20), rgba(212,233,226,0) 62%);
+}
+.rings{
+  position:absolute; z-index:-1; right:clamp(-16rem,-8vw,-5rem); top:50%;
+  width:clamp(22rem,46vw,38rem); aspect-ratio:1; translate:0 -50%;
+  color:var(--mint); opacity:.18; pointer-events:none;
+  animation:drift 120s linear infinite;
+}
+.hero h1{
+  font-size:clamp(3rem,11.5vw,6.2rem); font-weight:800;
+  letter-spacing:-.05em; line-height:.9;
+}
+.hero .place{
+  font-family:Faustina,serif; font-style:italic;
+  font-size:clamp(1.1rem,3.5vw,1.45rem); color:rgba(255,255,255,.8); margin-top:.6rem;
+}
+.live{
+  display:inline-flex; align-items:center; gap:.65rem; margin-top:2.1rem;
+  padding:.72rem 1.35rem .72rem 1.1rem; border-radius:var(--pill);
+  background:rgba(212,233,226,.12); border:1px solid rgba(212,233,226,.3);
+  backdrop-filter:blur(6px);
+  font-size:clamp(1rem,3vw,1.18rem); font-weight:600;
+}
+.dot{width:.55rem; height:.55rem; border-radius:50%; background:var(--mint); flex:none; animation:pulse 2.6s ease-out infinite}
+.bar-status .dot{background:var(--green); animation:none}
+.dot.shut{background:#8ba09a; animation:none; opacity:.85}
+.bar-status .dot.shut{background:#a8b3ae}
+.live-note{margin-top:.75rem; font-size:.95rem; color:rgba(212,233,226,.85); min-height:1.25rem}
+.hero-cta{display:flex; flex-wrap:wrap; gap:.75rem; margin-top:2.2rem}
+
+/* ===========================================================
+   MINT NOTICE STRIP
+   =========================================================== */
+.notice{background:var(--mint); color:var(--house)}
+.notice .wrap{display:flex; gap:1rem; align-items:flex-start; padding:1.3rem 0}
+.notice .ico{
+  flex:none; width:1.9rem; height:1.9rem; border-radius:50%;
+  background:var(--green); color:var(--white); display:grid; place-items:center;
+}
+.notice p{font-size:1rem; max-width:56rem; color:var(--house); font-style:italic}
 
 /* ===========================================================
    SECTION HEADS
    =========================================================== */
-.band{padding:3.4rem 0 1rem}
-.band-head{display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap}
+.band{padding:clamp(3.4rem,7vw,5.2rem) 0 1rem}
+.band-head{display:flex; align-items:flex-end; gap:1.4rem 2rem; flex-wrap:wrap}
 .band-head h2{
-  font-size:clamp(2.1rem,8vw,3.9rem); font-weight:800;
-  text-transform:uppercase; letter-spacing:-.025em; color:var(--deep);
+  font-size:clamp(2.1rem,6.5vw,3.5rem); font-weight:800;
+  letter-spacing:-.035em; color:var(--house);
 }
-.rule{flex:1 1 4rem; height:1px; background:var(--line)}
+.on-dark .band-head h2{color:var(--white)}
+.head-copy{flex:1 1 20rem}
 
-/* search, set as a quiet field on the head row */
-.find{position:relative; flex:0 1 17rem}
+/* search — pill field */
+.find{position:relative; flex:0 1 19rem; margin-left:auto}
 .find input{
   width:100%; font:inherit; font-size:.95rem; color:var(--ink);
-  background:transparent; border:0; border-bottom:1.5px solid var(--line);
-  padding:.55rem 0 .55rem 1.6rem;
+  background:var(--white); border:1.5px solid var(--line); border-radius:var(--pill);
+  padding:.72rem 1.2rem .72rem 2.65rem;
+  transition:border-color .3s var(--ease), box-shadow .3s var(--ease);
 }
-.find input::placeholder{color:#9aa583}
-.find input:focus{border-bottom-color:var(--olive); outline:none}
-.find svg{position:absolute; left:0; top:50%; transform:translateY(-50%); color:var(--muted)}
+.find input::placeholder{color:#9aa39f}
+.find input:focus{border-color:var(--green); outline:none; box-shadow:0 0 0 .22rem rgba(0,98,65,.13)}
+.find svg{position:absolute; left:1.05rem; top:50%; transform:translateY(-50%); color:var(--gray); pointer-events:none}
 
 /* ===========================================================
-   MENU BLOCKS
+   MENU CARDS
    =========================================================== */
-.blocks{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:3.2rem 4.5rem; padding:2.4rem 0 1rem; align-items:start}
-.block h3{font-size:1.3rem; font-weight:600; letter-spacing:-.01em; color:var(--deep)}
-.block .key{font-size:.95rem; margin-top:.2rem}
-.block ul{margin-top:1.15rem; border-top:1px solid var(--line)}
+.blocks{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.6rem; padding:2.4rem 0 1rem; align-items:start}
+.block{
+  background:var(--white); border-radius:var(--card);
+  padding:1.9rem 1.8rem 1.4rem;
+  box-shadow:0 1px 2px rgba(30,57,50,.05);
+  transition:box-shadow .45s var(--ease), transform .45s var(--ease);
+}
+.block:hover{transform:translateY(-.3rem); box-shadow:0 1.4rem 2.6rem -1.1rem rgba(30,57,50,.26)}
+.block.wide{grid-column:1/-1}
+.block.wide ul{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:3.5rem}
+.block h3{font-size:1.35rem; font-weight:700; color:var(--house)}
+.block .key{
+  font-family:Faustina,serif; text-transform:uppercase; letter-spacing:.18em;
+  font-size:.72rem; font-weight:600; font-style:normal; color:var(--gray); margin-top:.5rem;
+}
+.block ul{margin-top:1.1rem; border-top:1px solid var(--line)}
 
-.item{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.3rem 1.2rem; align-items:baseline; padding:.72rem 0; border-bottom:1px solid var(--line)}
-.item .n{font-size:1.02rem}
-.item .d{grid-column:1/-1; margin-top:-.15rem; font-size:.9rem; font-family:Newsreader,serif; font-style:italic; color:var(--muted)}
+.item{
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.3rem 1.2rem;
+  align-items:baseline; padding:.78rem .7rem; margin-inline:-.7rem;
+  border-bottom:1px solid var(--line); border-radius:.55rem;
+  transition:background .3s var(--ease);
+}
+.item:hover{background:var(--cream)}
+.item .n{font-size:1.02rem; font-weight:500}
+.item .d{grid-column:1/-1; margin-top:-.1rem; font-size:.9rem; font-family:Faustina,serif; font-style:italic; color:var(--gray)}
 .prices{display:flex; gap:1.1rem; white-space:nowrap; font-variant-numeric:tabular-nums}
-.p{width:3.1rem; text-align:right; font-size:1rem; font-weight:500; color:var(--deep)}
+.p{width:3.1rem; text-align:right; font-size:1rem; font-weight:600; color:var(--house); transition:color .3s var(--ease)}
+.item:hover .p{color:var(--green)}
 .p .sz{display:none}
-.p.na{color:#c2cdb3; font-weight:400}
+.p.na{color:#c3ccc8; font-weight:400}
+.item:hover .p.na{color:#c3ccc8}
 .one .p{width:3.4rem}
 
-.empty{display:none; padding:2rem 0 1rem; font-size:1.05rem}
+.empty{display:none; padding:2.5rem 0 1rem; font-size:1.05rem}
 .empty.on{display:block}
 
 /* ===========================================================
-   MEAL BUNDLES — deeper green band
+   MEAL BUNDLES — House Green band, mint step cards
    =========================================================== */
-.swipe{background:var(--forest); color:var(--cream); padding:3.6rem 0 3.8rem; margin-top:3rem}
-.swipe .band-head h2{color:#fff}
-.swipe .rule{background:rgba(255,255,255,.28)}
-.swipe .lede{margin-top:1.2rem; max-width:46rem; font-size:1.05rem; color:rgba(251,252,247,.88)}
-.picks{display:grid; grid-template-columns:repeat(3,1fr); gap:2.6rem; margin-top:2.6rem}
-.pick h3{font-size:1.25rem; color:#fff}
-.pick .key{font-size:.92rem; margin-top:.2rem; color:rgba(251,252,247,.7)}
-.pick ul{margin-top:1rem; border-top:1px solid rgba(255,255,255,.24)}
-.pick li{padding:.6rem 0; border-bottom:1px solid rgba(255,255,255,.14); font-size:1rem}
-.excl{margin-top:2.4rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.24); display:flex; gap:.6rem .8rem; flex-wrap:wrap; align-items:center}
-.excl b{font-weight:600; color:#fff; margin-right:.3rem}
-.tag{border:1px solid rgba(255,255,255,.38); border-radius:999px; padding:.2rem .8rem; font-size:.92rem}
-.excl-note{margin-top:1.1rem; color:rgba(251,252,247,.78); font-size:.98rem}
+.swipe{
+  position:relative; overflow:hidden; isolation:isolate;
+  background:var(--house); color:var(--white);
+  padding:clamp(3.6rem,7vw,5.4rem) 0 clamp(3.6rem,7vw,5rem); margin-top:3.4rem;
+}
+.swipe::before{
+  content:""; position:absolute; z-index:-1; left:-18rem; bottom:-24rem;
+  width:44rem; height:44rem; border-radius:50%;
+  background:radial-gradient(circle at 60% 40%, rgba(212,233,226,.16), rgba(212,233,226,0) 64%);
+}
+.swipe .lede{margin-top:1.1rem; max-width:44rem; font-size:1.06rem; color:rgba(255,255,255,.82)}
+.picks{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1.4rem; margin-top:2.8rem}
+.pick{
+  background:rgba(212,233,226,.07); border:1px solid rgba(212,233,226,.22);
+  border-radius:var(--card); padding:1.7rem 1.6rem 1.3rem;
+  transition:background .45s var(--ease), transform .45s var(--ease), border-color .45s var(--ease);
+}
+.pick:hover{background:rgba(212,233,226,.13); border-color:rgba(212,233,226,.4); transform:translateY(-.35rem)}
+.step{
+  width:2.1rem; height:2.1rem; border-radius:50%; background:var(--mint); color:var(--house);
+  display:grid; place-items:center; font-weight:800; font-size:.92rem; margin-bottom:1rem;
+}
+.pick h3{font-size:1.25rem; color:var(--white)}
+.pick .key{
+  font-family:Faustina,serif; text-transform:uppercase; letter-spacing:.18em;
+  font-size:.72rem; font-weight:600; color:var(--mint); margin-top:.45rem;
+}
+.pick ul{margin-top:1.1rem; border-top:1px solid rgba(212,233,226,.2)}
+.pick li{padding:.62rem 0; border-bottom:1px solid rgba(212,233,226,.12); font-size:1rem; color:rgba(255,255,255,.92)}
+
+.excl{margin-top:2.6rem; padding-top:1.6rem; border-top:1px solid rgba(212,233,226,.22); display:flex; gap:.6rem .7rem; flex-wrap:wrap; align-items:center}
+.excl b{font-weight:700; color:var(--white); margin-right:.4rem}
+.tag{
+  border:1px solid rgba(212,233,226,.42); border-radius:var(--pill);
+  padding:.32rem .95rem; font-size:.92rem; color:rgba(255,255,255,.9);
+  transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+}
+.tag:hover{background:var(--mint); color:var(--house); border-color:var(--mint)}
+.excl-note{margin-top:1.2rem; color:rgba(212,233,226,.85); font-size:.98rem}
 
 /* ===========================================================
    HOURS
    =========================================================== */
-.hrs{max-width:34rem; margin-top:2.2rem; border-top:1px solid var(--line)}
-.hrow{display:flex; justify-content:space-between; gap:1rem; padding:.85rem .6rem; border-bottom:1px solid var(--line)}
-.hrow .t{font-variant-numeric:tabular-nums; color:var(--deep); font-weight:500}
-.hrow.today{background:#e2ead4; font-weight:600; margin-inline:-.6rem; padding-inline:1.2rem}
-.hrow.today .d::after{content:" — today"; font-weight:400; color:var(--muted)}
-.caveat{margin-top:1.4rem; max-width:40rem; font-size:1rem}
+.hrs{
+  max-width:38rem; margin-top:2.4rem; background:var(--white);
+  border-radius:var(--card); padding:.7rem 1.6rem; box-shadow:0 1px 2px rgba(30,57,50,.05);
+}
+.hrow{
+  display:flex; justify-content:space-between; gap:1rem; align-items:center;
+  padding:.9rem .8rem; margin-inline:-.8rem; border-bottom:1px solid var(--line);
+  border-radius:.55rem; transition:background .3s var(--ease);
+}
+.hrow:last-child{border-bottom:0}
+.hrow:hover{background:var(--cream)}
+.hrow .d{font-weight:500}
+.hrow .t{font-variant-numeric:tabular-nums; color:var(--house); font-weight:600}
+.hrow.today{background:var(--mint-soft); box-shadow:inset .2rem 0 0 var(--green)}
+.hrow.today:hover{background:var(--mint-soft)}
+.hrow.today .d,.hrow.today .t{font-weight:700}
+.hrow.today .d::after{
+  content:"today"; margin-left:.6rem; vertical-align:.08em;
+  background:var(--green); color:var(--white); border-radius:var(--pill);
+  padding:.14rem .6rem; font-size:.68rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.1em;
+}
+.caveat{margin-top:1.5rem; max-width:40rem; font-size:1rem}
 
 /* ===========================================================
    FOOTER
    =========================================================== */
-footer{background:var(--deep); color:rgba(251,252,247,.78); margin-top:4rem; padding:3rem 0; font-size:.95rem}
-footer h3{color:var(--cream); font-size:1.8rem; font-weight:800; letter-spacing:-.03em}
-footer p{margin-top:.9rem; max-width:44rem}
+footer{background:var(--house); color:rgba(255,255,255,.72); margin-top:4.5rem; padding:3.6rem 0 3rem; font-size:.95rem}
+footer h3{color:var(--white); font-size:2rem; font-weight:800; letter-spacing:-.04em}
+footer p{margin-top:.95rem; max-width:46rem}
+footer .rule{height:1px; background:rgba(212,233,226,.2); margin:2rem 0 1.6rem}
+footer .note{color:rgba(212,233,226,.72)}
+
+/* ===========================================================
+   BACK TO TOP
+   =========================================================== */
+.totop{
+  position:fixed; right:1.6rem; bottom:1.6rem; z-index:40;
+  width:3rem; height:3rem; border-radius:50%; border:0; cursor:pointer;
+  background:var(--green); color:var(--white); display:grid; place-items:center;
+  box-shadow:0 .55rem 1.6rem rgba(30,57,50,.3);
+  opacity:0; transform:translateY(1rem) scale(.9); pointer-events:none;
+  transition:all .35s var(--ease);
+}
+.totop.on{opacity:1; transform:none; pointer-events:auto}
+.totop:hover{background:var(--house)}
 
 /* ===========================================================
    PHONE
    =========================================================== */
-@media (max-width:820px){
-  .blocks{grid-template-columns:1fr; gap:2.6rem}
-  .picks{grid-template-columns:1fr; gap:2rem}
+@media (max-width:900px){
+  .blocks{grid-template-columns:1fr}
+  .block.wide ul{grid-template-columns:1fr; column-gap:0}
+  .picks{grid-template-columns:1fr}
 }
-@media (max-width:620px){
+@media (max-width:680px){
   .wrap{width:min(100% - 1.8rem, var(--w))}
+  .bar-in{height:3.9rem; gap:.75rem}
   .bar-nav{display:none}
-  .bar-status{margin-left:auto; font-size:.85rem}
+  .bar-status{margin-left:auto; font-size:.76rem; padding:.3rem .7rem .3rem .6rem}
+  .find{flex:1 1 100%; margin-left:0}
   .item{grid-template-columns:1fr; gap:.25rem}
-  .prices{gap:1.3rem; margin-top:.15rem}
+  .prices{gap:1.3rem; margin-top:.2rem}
   .p{width:auto; text-align:left}
-  .p .sz{display:inline; font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-right:.28rem}
+  .p .sz{display:inline; font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gray); margin-right:.3rem}
   .p.na{display:none}
-  .find{flex:1 1 100%}
+  .totop{right:1rem; bottom:1rem}
 }
 </style>
 </head>
 <body>
 
-<div class="bar">
+<div class="bar" id="bar">
   <div class="wrap bar-in">
-    <a class="bar-mark" href="#top">brew</a>
+    <a class="bar-mark" href="#top">
+      <span class="seal" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12h14v7a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6zM21 14h2.5a3.5 3.5 0 0 1 0 7H21"/></svg>
+      </span>
+      brew
+    </a>
     <p class="bar-status"><span class="dot" id="dotMini"></span><span id="statusMini">&nbsp;</span></p>
     <nav class="bar-nav">
       <a href="#drinks">Drinks</a>
-      <a href="#bundles">Meal bundles</a>
       <a href="#hours">Hours</a>
+      <a class="btn" href="#bundles">Meal bundles</a>
     </nav>
   </div>
 </div>
 
-<header class="hero" id="top">
+<header class="hero on-dark" id="top">
+  <svg class="rings" viewBox="0 0 400 400" fill="none" stroke="currentColor" aria-hidden="true">
+    <circle cx="200" cy="200" r="196" stroke-width="1.5"/>
+    <circle cx="200" cy="200" r="158" stroke-width="1.5" stroke-dasharray="6 14"/>
+    <circle cx="200" cy="200" r="118" stroke-width="1.5"/>
+    <circle cx="200" cy="200" r="76" stroke-width="1.5" stroke-dasharray="3 10"/>
+  </svg>
   <div class="wrap">
-    <h1>brew</h1>
-    <p class="place">by the slough · Augustana College</p>
+    <p class="eyebrow curtain"><span>Augustana College</span></p>
+    <h1 class="curtain"><span>brew</span></h1>
+    <p class="place curtain"><span>by the slough</span></p>
     <p class="live"><span class="dot" id="dot"></span><span id="statusText">Checking today’s hours…</span></p>
     <p class="live-note" id="statusNote">&nbsp;</p>
+    <div class="hero-cta">
+      <a class="btn light" href="#drinks">See the menu</a>
+      <a class="btn outline" href="#bundles">How meal bundles work</a>
+    </div>
   </div>
 </header>
 
 <div class="notice">
   <div class="wrap">
-    <p class="note">Espresso drinks, refreshers and blended drinks are not part of a meal bundle — those are paid for separately. Sizes are tall 12 oz, grande 16 oz, venti 20 oz.</p>
+    <span class="ico" aria-hidden="true">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 8h.01M12 12v5"/></svg>
+    </span>
+    <p>Espresso drinks, refreshers and blended drinks are not part of a meal bundle — those are paid for separately. Sizes are tall 12 oz, grande 16 oz, venti 20 oz.</p>
   </div>
 </div>
 
@@ -210,9 +440,11 @@ footer p{margin-top:.9rem; max-width:44rem}
 <!-- ======================= DRINKS ======================= -->
 <section class="band" id="drinks">
   <div class="wrap">
-    <div class="band-head">
-      <h2>Drinks</h2>
-      <span class="rule"></span>
+    <div class="band-head" data-rise>
+      <div class="head-copy">
+        <p class="eyebrow">The board</p>
+        <h2>Drinks</h2>
+      </div>
       <div class="find">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
         <input id="q" type="search" placeholder="Find a drink" aria-label="Search the menu" autocomplete="off">
@@ -222,9 +454,9 @@ footer p{margin-top:.9rem; max-width:44rem}
     <div class="blocks">
 
       <!-- Espresso -->
-      <div class="block" data-block>
+      <div class="block" data-block data-rise>
         <h3>Espresso</h3>
-        <p class="key note">tall · grande · venti</p>
+        <p class="key">tall · grande · venti</p>
         <ul>
           <li class="item" data-item><span class="n">Latte</span><span class="prices"><span class="p"><span class="sz">t</span>5.00</span><span class="p"><span class="sz">g</span>5.50</span><span class="p"><span class="sz">v</span>5.75</span></span></li>
           <li class="item" data-item><span class="n">Cappuccino</span><span class="prices"><span class="p"><span class="sz">t</span>5.00</span><span class="p"><span class="sz">g</span>5.50</span><span class="p"><span class="sz">v</span>5.75</span></span></li>
@@ -235,9 +467,9 @@ footer p{margin-top:.9rem; max-width:44rem}
       </div>
 
       <!-- Iced -->
-      <div class="block" data-block>
+      <div class="block" data-block data-rise>
         <h3>Iced coffee &amp; tea</h3>
-        <p class="key note">tall · grande · venti</p>
+        <p class="key">tall · grande · venti</p>
         <ul>
           <li class="item" data-item><span class="n">Iced coffee</span><span class="prices"><span class="p"><span class="sz">t</span>3.75</span><span class="p"><span class="sz">g</span>4.25</span><span class="p"><span class="sz">v</span>4.50</span></span></li>
           <li class="item" data-item><span class="n">Iced chai latte</span><span class="prices"><span class="p"><span class="sz">t</span>5.25</span><span class="p"><span class="sz">g</span>5.50</span><span class="p"><span class="sz">v</span>6.00</span></span></li>
@@ -251,9 +483,9 @@ footer p{margin-top:.9rem; max-width:44rem}
       </div>
 
       <!-- Hot -->
-      <div class="block" data-block>
+      <div class="block" data-block data-rise>
         <h3>Hot favourites</h3>
-        <p class="key note">tall · grande · venti</p>
+        <p class="key">tall · grande · venti</p>
         <ul>
           <li class="item" data-item><span class="n">Hot chocolate</span><span class="prices"><span class="p"><span class="sz">t</span>3.75</span><span class="p"><span class="sz">g</span>4.25</span><span class="p"><span class="sz">v</span>4.50</span></span><span class="d">White or dark chocolate</span></li>
           <li class="item" data-item><span class="n">Steamer</span><span class="prices"><span class="p"><span class="sz">t</span>3.00</span><span class="p"><span class="sz">g</span>3.50</span><span class="p"><span class="sz">v</span>3.75</span></span><span class="d">Steamed milk with the syrup of your choice</span></li>
@@ -264,9 +496,9 @@ footer p{margin-top:.9rem; max-width:44rem}
       </div>
 
       <!-- Refreshers -->
-      <div class="block one" data-block>
+      <div class="block one" data-block data-rise>
         <h3>Refreshers</h3>
-        <p class="key note">grande only</p>
+        <p class="key">grande only</p>
         <ul>
           <li class="item" data-item><span class="n">Strawberry açaí</span><span class="prices"><span class="p">6.00</span></span></li>
           <li class="item" data-item><span class="n">Pink Drink</span><span class="prices"><span class="p">6.00</span></span></li>
@@ -276,9 +508,9 @@ footer p{margin-top:.9rem; max-width:44rem}
       </div>
 
       <!-- Add ons -->
-      <div class="block one" data-block>
+      <div class="block one wide" data-block data-rise>
         <h3>Make it yours</h3>
-        <p class="key note">added to any drink</p>
+        <p class="key">added to any drink</p>
         <ul>
           <li class="item" data-item><span class="n">Flavoured syrup</span><span class="prices"><span class="p">1.00</span></span></li>
           <li class="item" data-item><span class="n">Extra espresso shot</span><span class="prices"><span class="p">1.75</span></span></li>
@@ -294,48 +526,55 @@ footer p{margin-top:.9rem; max-width:44rem}
 </section>
 
 <!-- ======================= MEAL BUNDLES ======================= -->
-<section class="swipe" id="bundles">
+<section class="swipe on-dark" id="bundles">
   <div class="wrap">
-    <div class="band-head">
-      <h2>Meal bundles</h2>
-      <span class="rule"></span>
+    <div class="band-head" data-rise>
+      <div class="head-copy">
+        <p class="eyebrow">One swipe</p>
+        <h2>Meal bundles</h2>
+      </div>
     </div>
-    <p class="lede">One meal swipe covers a bundle. Pick an entrée, a side and a drink, and order all three together at the register.</p>
+    <p class="lede" data-rise>One meal swipe covers a bundle. Pick an entrée, a side and a drink, and order all three together at the register.</p>
 
     <div class="picks">
-      <div class="pick">
+      <div class="pick" data-rise>
+        <p class="step" aria-hidden="true">1</p>
         <h3>Entrée</h3>
         <p class="key">pick one</p>
         <ul>
           <li>Sandwiches</li><li>Salads</li><li>Wraps</li><li>Cereal</li><li>Muffin</li><li>Bagel</li>
         </ul>
       </div>
-      <div class="pick">
+      <div class="pick" data-rise>
+        <p class="step" aria-hidden="true">2</p>
         <h3>Side</h3>
         <p class="key">pick one</p>
         <ul><li>Fruit cup</li><li>Veggie cup</li><li>Chips</li><li>Nacho chips</li><li>Cottage cheese</li><li>Yoghurt parfait</li></ul>
       </div>
-      <div class="pick">
+      <div class="pick" data-rise>
+        <p class="step" aria-hidden="true">3</p>
         <h3>Drink</h3>
         <p class="key">pick one</p>
         <ul><li>Water</li><li>Soda</li><li>Powerade</li><li>Milk</li></ul>
       </div>
     </div>
 
-    <p class="excl"><b>Not included:</b><span class="tag">Monster</span><span class="tag">Energy drinks</span><span class="tag">Tea</span><span class="tag">Juice</span></p>
-    <p class="excl-note">Bundles are taken any time the shop is open.</p>
+    <p class="excl" data-rise><b>Not included:</b><span class="tag">Monster</span><span class="tag">Energy drinks</span><span class="tag">Tea</span><span class="tag">Juice</span></p>
+    <p class="excl-note" data-rise>Bundles are taken any time the shop is open.</p>
   </div>
 </section>
 
 <!-- ======================= HOURS ======================= -->
 <section class="band" id="hours">
   <div class="wrap">
-    <div class="band-head">
-      <h2>Hours</h2>
-      <span class="rule"></span>
+    <div class="band-head" data-rise>
+      <div class="head-copy">
+        <p class="eyebrow">Before you walk over</p>
+        <h2>Hours</h2>
+      </div>
     </div>
 
-    <div class="hrs">
+    <div class="hrs" data-rise>
       <div class="hrow" data-day="1"><span class="d">Monday</span><span class="t">7:30 am – 8:00 pm</span></div>
       <div class="hrow" data-day="2"><span class="d">Tuesday</span><span class="t">7:30 am – 8:00 pm</span></div>
       <div class="hrow" data-day="3"><span class="d">Wednesday</span><span class="t">7:30 am – 8:00 pm</span></div>
@@ -344,7 +583,7 @@ footer p{margin-top:.9rem; max-width:44rem}
       <div class="hrow" data-day="6"><span class="d">Saturday</span><span class="t">11:00 am – 3:00 pm</span></div>
       <div class="hrow" data-day="0"><span class="d">Sunday</span><span class="t">11:00 am – 3:00 pm</span></div>
     </div>
-    <p class="caveat note">Hours change over breaks and holidays, so check the screen in the shop before a long walk across campus.</p>
+    <p class="caveat note" data-rise>Hours change over breaks and holidays, so check the screen in the shop before a long walk across campus.</p>
   </div>
 </section>
 
@@ -354,9 +593,14 @@ footer p{margin-top:.9rem; max-width:44rem}
   <div class="wrap">
     <h3>brew by the slough</h3>
     <p>Augustana College Dining Services.</p>
+    <div class="rule"></div>
     <p class="note">Prices are copied from the boards in the shop and can change without notice — the register is always right. This page is made by a student and is not an official Augustana site.</p>
   </div>
 </footer>
+
+<button class="totop" id="totop" aria-label="Back to top">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <script>
 /* -----------------------------------------------------------
@@ -452,6 +696,58 @@ q.addEventListener('input', () => {
   });
 
   empty.classList.toggle('on', hits === 0);
+});
+
+/* -----------------------------------------------------------
+   MOTION — curtain wipe on load, staggered reveal on scroll,
+   nav shadow + section highlight, back-to-top.
+   ----------------------------------------------------------- */
+const rises = document.querySelectorAll('[data-rise]');
+
+requestAnimationFrame(() => document.documentElement.classList.add('ready'));
+
+if ('IntersectionObserver' in window){
+  const io = new IntersectionObserver((entries, obs) => {
+    // stagger siblings that come into view together
+    entries.filter(e => e.isIntersecting).forEach((e, i) => {
+      e.target.style.transitionDelay = Math.min(i, 5) * 70 + 'ms';
+      e.target.classList.add('in');
+      obs.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+  rises.forEach(el => io.observe(el));
+
+  // nav link follows the section you are reading
+  const links = new Map();
+  document.querySelectorAll('.bar-nav a[href^="#"]').forEach(a => links.set(a.getAttribute('href').slice(1), a));
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const a = links.get(e.target.id);
+      if (a) a.classList.toggle('here', e.isIntersecting);
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  links.forEach((a, id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
+} else {
+  rises.forEach(el => el.classList.add('in'));
+}
+
+const bar = document.getElementById('bar');
+const totop = document.getElementById('totop');
+let ticking = false;
+function onScroll(){
+  const y = window.scrollY;
+  bar.classList.toggle('stuck', y > 8);
+  totop.classList.toggle('on', y > 700);
+  ticking = false;
+}
+addEventListener('scroll', () => {
+  if (!ticking){ ticking = true; requestAnimationFrame(onScroll); }
+}, { passive: true });
+onScroll();
+
+totop.addEventListener('click', () => {
+  const soft = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  scrollTo({ top: 0, behavior: soft ? 'auto' : 'smooth' });
 });
 </script>
 </body>

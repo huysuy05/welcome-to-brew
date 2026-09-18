@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brew by the Slough — menu, meal bundles &amp; hours</title>
+<meta name="description" content="Full menu, prices, meal bundle rules and current hours for Brew by the Slough at Augustana College.">
+<meta name="theme-color" content="#79883c">
+
+<meta property="og:title" content="Brew by the Slough">
+<meta property="og:description" content="Menu, meal bundles and hours — without waiting for the screen to change.">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2379883c'/%3E%3Cpath d='M7 12h14v7a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6zM21 14h2.5a3.5 3.5 0 0 1 0 7H21' fill='none' stroke='%23fbfcf7' stroke-width='2'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================================
+   TOKENS
+   =========================================================== */
+:root{
+  --paper:#eef3e5;      /* pastel green field            */
+  --cream:#fbfcf7;
+  --olive:#79883c;      /* the sign green                */
+  --deep:#3d4522;       /* headings                      */
+  --ink:#232a19;
+  --muted:#6d7756;
+  --line:#d3decb;       /* hairlines                     */
+  --forest:#5f6b2e;     /* meal bundles band             */
+  --w:70rem;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important; transition:none!important}}
+
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:Archivo, ui-sans-serif, system-ui, sans-serif;
+  font-size:1rem; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0; font-weight:600; line-height:1.05}
+p,ul{margin:0}
+ul{list-style:none; padding:0}
+a{color:inherit}
+:focus-visible{outline:2.5px solid var(--deep); outline-offset:4px}
+
+.wrap{width:min(100% - 2.6rem, var(--w)); margin-inline:auto}
+.note{font-family:Newsreader, Georgia, serif; font-style:italic; color:var(--muted)}
+
+/* ===========================================================
+   STICKY BAR — carries the live status down the page
+   =========================================================== */
+.bar{position:sticky; top:0; z-index:30; background:rgba(238,243,229,.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--line)}
+.bar-in{display:flex; align-items:center; gap:1.4rem; height:3.5rem}
+.bar-mark{font-weight:800; letter-spacing:-.02em; font-size:1.15rem; color:var(--deep); text-decoration:none}
+.bar-status{display:flex; align-items:center; gap:.45rem; font-size:.88rem; color:var(--muted); min-width:0}
+.bar-status span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.bar-nav{margin-left:auto; display:flex; gap:1.6rem}
+.bar-nav a{text-decoration:none; font-size:.78rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.bar-nav a:hover{color:var(--deep)}
+
+/* ===========================================================
+   HERO
+   =========================================================== */
+.hero{background:var(--olive); color:var(--cream); padding:3rem 0 2.4rem}
+.hero h1{font-size:clamp(2.9rem,11vw,5.4rem); font-weight:800; letter-spacing:-.045em; line-height:.92}
+.hero .place{font-family:Newsreader,serif; font-style:italic; font-size:clamp(1.1rem,3.5vw,1.4rem); color:rgba(251,252,247,.82); margin-top:.5rem}
+.live{margin-top:1.9rem; display:flex; align-items:center; gap:.7rem; font-size:clamp(1.15rem,4vw,1.5rem); font-weight:500}
+.dot{width:.6rem; height:.6rem; border-radius:50%; background:var(--cream); flex:none; animation:pulse 2.6s ease-out infinite}
+.dot.shut{background:#cfd2bd; opacity:.7; animation:none}
+@keyframes pulse{70%{box-shadow:0 0 0 .5rem rgba(251,252,247,0)} 100%{box-shadow:0 0 0 0 rgba(251,252,247,0)}}
+.live-note{margin-top:.45rem; font-size:.95rem; color:rgba(251,252,247,.75)}
+
+/* ===========================================================
+   TOP NOTICE — mirrors the reference's availability line
+   =========================================================== */
+.notice{border-bottom:1px solid var(--line); padding:1.4rem 0}
+.notice p{font-size:1.02rem; max-width:52rem}
+
+/* ===========================================================
+   SECTION HEADS
+   =========================================================== */
+.band{padding:3.4rem 0 1rem}
+.band-head{display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap}
+.band-head h2{
+  font-size:clamp(2.1rem,8vw,3.9rem); font-weight:800;
+  text-transform:uppercase; letter-spacing:-.025em; color:var(--deep);
+}
+.rule{flex:1 1 4rem; height:1px; background:var(--line)}
+
+/* search, set as a quiet field on the head row */
+.find{position:relative; flex:0 1 17rem}
+.find input{
+  width:100%; font:inherit; font-size:.95rem; color:var(--ink);
+  background:transparent; border:0; border-bottom:1.5px solid var(--line);
+  padding:.55rem 0 .55rem 1.6rem;
+}
+.find input::placeholder{color:#9aa583}
+.find input:focus{border-bottom-color:var(--olive); outline:none}
+.find svg{position:absolute; left:0; top:50%; transform:translateY(-50%); color:var(--muted)}
+
+/* ===========================================================
+   MENU BLOCKS
+   =========================================================== */
+.blocks{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:3.2rem 4.5rem; padding:2.4rem 0 1rem; align-items:start}
+.block h3{font-size:1.3rem; font-weight:600; letter-spacing:-.01em; color:var(--deep)}
+.block .key{font-size:.95rem; margin-top:.2rem}
+.block ul{margin-top:1.15rem; border-top:1px solid var(--line)}
+
+.item{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.3rem 1.2rem; align-items:baseline; padding:.72rem 0; border-bottom:1px solid var(--line)}
+.item .n{font-size:1.02rem}
+.item .d{grid-column:1/-1; margin-top:-.15rem; font-size:.9rem; font-family:Newsreader,serif; font-style:italic; color:var(--muted)}
+.prices{display:flex; gap:1.1rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.p{width:3.1rem; text-align:right; font-size:1rem; font-weight:500; color:var(--deep)}
+.p .sz{display:none}
+.p.na{color:#c2cdb3; font-weight:400}
+.one .p{width:3.4rem}
+
+.empty{display:none; padding:2rem 0 1rem; font-size:1.05rem}
+.empty.on{display:block}
+
+/* ===========================================================
+   MEAL BUNDLES — deeper green band
+   =========================================================== */
+.swipe{background:var(--forest); color:var(--cream); padding:3.6rem 0 3.8rem; margin-top:3rem}
+.swipe .band-head h2{color:#fff}
+.swipe .rule{background:rgba(255,255,255,.28)}
+.swipe .lede{margin-top:1.2rem; max-width:46rem; font-size:1.05rem; color:rgba(251,252,247,.88)}
+.picks{display:grid; grid-template-columns:repeat(3,1fr); gap:2.6rem; margin-top:2.6rem}
+.pick h3{font-size:1.25rem; color:#fff}
+.pick .key{font-size:.92rem; margin-top:.2rem; color:rgba(251,252,247,.7)}
+.pick ul{margin-top:1rem; border-top:1px solid rgba(255,255,255,.24)}
+.pick li{padding:.6rem 0; border-bottom:1px solid rgba(255,255,255,.14); font-size:1rem}
+.excl{margin-top:2.4rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.24); display:flex; gap:.6rem .8rem; flex-wrap:wrap; align-items:center}
+.excl b{font-weight:600; color:#fff; margin-right:.3rem}
+.tag{border:1px solid rgba(255,255,255,.38); border-radius:999px; padding:.2rem .8rem; font-size:.92rem}
+.excl-note{margin-top:1.1rem; color:rgba(251,252,247,.78); font-size:.98rem}
+
+/* ===========================================================
+   HOURS
+   =========================================================== */
+.hrs{max-width:34rem; margin-top:2.2rem; border-top:1px solid var(--line)}
+.hrow{display:flex; justify-content:space-between; gap:1rem; padding:.85rem .6rem; border-bottom:1px solid var(--line)}
+.hrow .t{font-variant-numeric:tabular-nums; color:var(--deep); font-weight:500}
+.hrow.today{background:#e2ead4; font-weight:600; margin-inline:-.6rem; padding-inline:1.2rem}
+.hrow.today .d::after{content:" — today"; font-weight:400; color:var(--muted)}
+.caveat{margin-top:1.4rem; max-width:40rem; font-size:1rem}
+
+/* ===========================================================
+   FOOTER
+   =========================================================== */
+footer{background:var(--deep); color:rgba(251,252,247,.78); margin-top:4rem; padding:3rem 0; font-size:.95rem}
+footer h3{color:var(--cream); font-size:1.8rem; font-weight:800; letter-spacing:-.03em}
+footer p{margin-top:.9rem; max-width:44rem}
+
+/* ===========================================================
+   PHONE
+   =========================================================== */
+@media (max-width:820px){
+  .blocks{grid-template-columns:1fr; gap:2.6rem}
+  .picks{grid-template-columns:1fr; gap:2rem}
+}
+@media (max-width:620px){
+  .wrap{width:min(100% - 1.8rem, var(--w))}
+  .bar-nav{display:none}
+  .bar-status{margin-left:auto; font-size:.85rem}
+  .item{grid-template-columns:1fr; gap:.25rem}
+  .prices{gap:1.3rem; margin-top:.15rem}
+  .p{width:auto; text-align:left}
+  .p .sz{display:inline; font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-right:.28rem}
+  .p.na{display:none}
+  .find{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="wrap bar-in">
+    <a class="bar-mark" href="#top">brew</a>
+    <p class="bar-status"><span class="dot" id="dotMini"></span><span id="statusMini">&nbsp;</span></p>
+    <nav class="bar-nav">
+      <a href="#drinks">Drinks</a>
+      <a href="#bundles">Meal bundles</a>
+      <a href="#hours">Hours</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1>brew</h1>
+    <p class="place">by the slough · Augustana College</p>
+    <p class="live"><span class="dot" id="dot"></span><span id="statusText">Checking today’s hours…</span></p>
+    <p class="live-note" id="statusNote">&nbsp;</p>
+  </div>
+</header>
+
+<div class="notice">
+  <div class="wrap">
+    <p class="note">Espresso drinks, refreshers and blended drinks are not part of a meal bundle — those are paid for separately. Sizes are tall 12 oz, grande 16 oz, venti 20 oz.</p>
+  </div>
+</div>
+
+<main>
+
+<!-- ======================= DRINKS ======================= -->
+<section class="band" id="drinks">
+  <div class="wrap">
+    <div class="band-head">
+      <h2>Drinks</h2>
+      <span class="rule"></span>
+      <div class="find">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="q" type="search" placeholder="Find a drink" aria-label="Search the menu" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="blocks">
+
+      <!-- Espresso -->
+      <div class="block" data-block>
+        <h3>Espresso</h3>
+        <p class="key note">tall · grande · venti</p>
+        <ul>
+          <li class="item" data-item><span class="n">Latte</span><span class="prices"><span class="p"><span class="sz">t</span>5.00</span><span class="p"><span class="sz">g</span>5.50</span><span class="p"><span class="sz">v</span>5.75</span></span></li>
+          <li class="item" data-item><span class="n">Cappuccino</span><span class="prices"><span class="p"><span class="sz">t</span>5.00</span><span class="p"><span class="sz">g</span>5.50</span><span class="p"><span class="sz">v</span>5.75</span></span></li>
+          <li class="item" data-item><span class="n">Macchiato</span><span class="prices"><span class="p"><span class="sz">t</span>5.75</span><span class="p"><span class="sz">g</span>6.25</span><span class="p"><span class="sz">v</span>6.50</span></span></li>
+          <li class="item" data-item><span class="n">Americano</span><span class="prices"><span class="p"><span class="sz">t</span>4.25</span><span class="p"><span class="sz">g</span>4.75</span><span class="p"><span class="sz">v</span>5.00</span></span></li>
+          <li class="item" data-item><span class="n">Mocha</span><span class="prices"><span class="p"><span class="sz">t</span>5.75</span><span class="p"><span class="sz">g</span>6.25</span><span class="p"><span class="sz">v</span>6.50</span></span><span class="d">White or dark chocolate</span></li>
+        </ul>
+      </div>
+
+      <!-- Iced -->
+      <div class="block" data-block>
+        <h3>Iced coffee &amp; tea</h3>
+        <p class="key note">tall · grande · venti</p>
+        <ul>
+          <li class="item" data-item><span class="n">Iced coffee</span><span class="prices"><span class="p"><span class="sz">t</span>3.75</span><span class="p"><span class="sz">g</span>4.25</span><span class="p"><span class="sz">v</span>4.50</span></span></li>
+          <li class="item" data-item><span class="n">Iced chai latte</span><span class="prices"><span class="p"><span class="sz">t</span>5.25</span><span class="p"><span class="sz">g</span>5.50</span><span class="p"><span class="sz">v</span>6.00</span></span></li>
+          <li class="item" data-item><span class="n">Iced matcha latte</span><span class="prices"><span class="p na">—</span><span class="p"><span class="sz">g</span>5.50</span><span class="p na">—</span></span></li>
+          <li class="item" data-item><span class="n">Iced tea</span><span class="prices"><span class="p na">—</span><span class="p"><span class="sz">g</span>3.00</span><span class="p na">—</span></span></li>
+          <li class="item" data-item><span class="n">Augie Palmer</span><span class="prices"><span class="p na">—</span><span class="p"><span class="sz">g</span>3.50</span><span class="p na">—</span></span><span class="d">Iced passion tea with lemonade</span></li>
+          <li class="item" data-item><span class="n">Italian soda</span><span class="prices"><span class="p na">—</span><span class="p"><span class="sz">g</span>4.00</span><span class="p na">—</span></span></li>
+          <li class="item" data-item><span class="n">Nitro</span><span class="prices"><span class="p na">—</span><span class="p"><span class="sz">g</span>5.50</span><span class="p na">—</span></span></li>
+          <li class="item" data-item><span class="n">Cold brew</span><span class="prices"><span class="p na">—</span><span class="p"><span class="sz">g</span>5.75</span><span class="p na">—</span></span></li>
+        </ul>
+      </div>
+
+      <!-- Hot -->
+      <div class="block" data-block>
+        <h3>Hot favourites</h3>
+        <p class="key note">tall · grande · venti</p>
+        <ul>
+          <li class="item" data-item><span class="n">Hot chocolate</span><span class="prices"><span class="p"><span class="sz">t</span>3.75</span><span class="p"><span class="sz">g</span>4.25</span><span class="p"><span class="sz">v</span>4.50</span></span><span class="d">White or dark chocolate</span></li>
+          <li class="item" data-item><span class="n">Steamer</span><span class="prices"><span class="p"><span class="sz">t</span>3.00</span><span class="p"><span class="sz">g</span>3.50</span><span class="p"><span class="sz">v</span>3.75</span></span><span class="d">Steamed milk with the syrup of your choice</span></li>
+          <li class="item" data-item><span class="n">Hot cider</span><span class="prices"><span class="p"><span class="sz">t</span>3.50</span><span class="p"><span class="sz">g</span>4.00</span><span class="p"><span class="sz">v</span>4.25</span></span></li>
+          <li class="item" data-item><span class="n">Hot brewed tea</span><span class="prices"><span class="p"><span class="sz">t</span>2.50</span><span class="p"><span class="sz">g</span>2.75</span><span class="p"><span class="sz">v</span>3.00</span></span></li>
+          <li class="item" data-item><span class="n">Matcha latte</span><span class="prices"><span class="p"><span class="sz">t</span>5.25</span><span class="p"><span class="sz">g</span>5.50</span><span class="p"><span class="sz">v</span>6.00</span></span><span class="d">Served hot</span></li>
+        </ul>
+      </div>
+
+      <!-- Refreshers -->
+      <div class="block one" data-block>
+        <h3>Refreshers</h3>
+        <p class="key note">grande only</p>
+        <ul>
+          <li class="item" data-item><span class="n">Strawberry açaí</span><span class="prices"><span class="p">6.00</span></span></li>
+          <li class="item" data-item><span class="n">Pink Drink</span><span class="prices"><span class="p">6.00</span></span></li>
+          <li class="item" data-item><span class="n">Matcha lemonade</span><span class="prices"><span class="p">6.00</span></span></li>
+          <li class="item" data-item><span class="n">Frappuccino</span><span class="prices"><span class="p">6.25</span></span></li>
+        </ul>
+      </div>
+
+      <!-- Add ons -->
+      <div class="block one" data-block>
+        <h3>Make it yours</h3>
+        <p class="key note">added to any drink</p>
+        <ul>
+          <li class="item" data-item><span class="n">Flavoured syrup</span><span class="prices"><span class="p">1.00</span></span></li>
+          <li class="item" data-item><span class="n">Extra espresso shot</span><span class="prices"><span class="p">1.75</span></span></li>
+          <li class="item" data-item><span class="n">Two extra shots</span><span class="prices"><span class="p">2.25</span></span></li>
+          <li class="item" data-item><span class="n">Sweet cream or cold foam</span><span class="prices"><span class="p">1.25</span></span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p class="empty note" id="empty">Nothing matches that. Try <em>latte</em>, <em>cider</em> or <em>foam</em>.</p>
+  </div>
+</section>
+
+<!-- ======================= MEAL BUNDLES ======================= -->
+<section class="swipe" id="bundles">
+  <div class="wrap">
+    <div class="band-head">
+      <h2>Meal bundles</h2>
+      <span class="rule"></span>
+    </div>
+    <p class="lede">One meal swipe covers a bundle. Pick an entrée, a side and a drink, and order all three together at the register.</p>
+
+    <div class="picks">
+      <div class="pick">
+        <h3>Entrée</h3>
+        <p class="key">pick one</p>
+        <ul>
+          <li>Sandwiches</li><li>Salads</li><li>Wraps</li><li>Cereal</li><li>Muffin</li><li>Bagel</li>
+        </ul>
+      </div>
+      <div class="pick">
+        <h3>Side</h3>
+        <p class="key">pick one</p>
+        <ul><li>Fruit cup</li><li>Veggie cup</li><li>Chips</li><li>Nacho chips</li><li>Cottage cheese</li><li>Yoghurt parfait</li></ul>
+      </div>
+      <div class="pick">
+        <h3>Drink</h3>
+        <p class="key">pick one</p>
+        <ul><li>Water</li><li>Soda</li><li>Powerade</li><li>Milk</li></ul>
+      </div>
+    </div>
+
+    <p class="excl"><b>Not included:</b><span class="tag">Monster</span><span class="tag">Energy drinks</span><span class="tag">Tea</span><span class="tag">Juice</span></p>
+    <p class="excl-note">Bundles are taken any time the shop is open.</p>
+  </div>
+</section>
+
+<!-- ======================= HOURS ======================= -->
+<section class="band" id="hours">
+  <div class="wrap">
+    <div class="band-head">
+      <h2>Hours</h2>
+      <span class="rule"></span>
+    </div>
+
+    <div class="hrs">
+      <div class="hrow" data-day="1"><span class="d">Monday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="2"><span class="d">Tuesday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="3"><span class="d">Wednesday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="4"><span class="d">Thursday</span><span class="t">7:30 am – 8:00 pm</span></div>
+      <div class="hrow" data-day="5"><span class="d">Friday</span><span class="t">7:30 am – 5:00 pm</span></div>
+      <div class="hrow" data-day="6"><span class="d">Saturday</span><span class="t">11:00 am – 3:00 pm</span></div>
+      <div class="hrow" data-day="0"><span class="d">Sunday</span><span class="t">11:00 am – 3:00 pm</span></div>
+    </div>
+    <p class="caveat note">Hours change over breaks and holidays, so check the screen in the shop before a long walk across campus.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <h3>brew by the slough</h3>
+    <p>Augustana College Dining Services.</p>
+    <p class="note">Prices are copied from the boards in the shop and can change without notice — the register is always right. This page is made by a student and is not an official Augustana site.</p>
+  </div>
+</footer>
+
+<script>
+/* -----------------------------------------------------------
+   HOURS — minutes after midnight, Central time.
+   Edit here if hours change. 7:30am = 450, 5pm = 1020, 8pm = 1200.
+   ----------------------------------------------------------- */
+const HOURS = {
+  0: [660, 900],    // Sunday      11:00 – 15:00
+  1: [450, 1200],   // Monday       7:30 – 20:00
+  2: [450, 1200],
+  3: [450, 1200],
+  4: [450, 1200],
+  5: [450, 1020],   // Friday       7:30 – 17:00
+  6: [660, 900]     // Saturday    11:00 – 15:00
+};
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function campusNow(){
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone:'America/Chicago', weekday:'short', hour:'2-digit', minute:'2-digit', hour12:false
+  }).formatToParts(new Date());
+  const get = t => parts.find(p => p.type === t).value;
+  return {
+    day: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(get('weekday')),
+    mins: (parseInt(get('hour'),10) % 24) * 60 + parseInt(get('minute'),10)
+  };
+}
+function clock(m){
+  const h = Math.floor(m/60), mm = String(m%60).padStart(2,'0');
+  return `${((h+11)%12)+1}:${mm} ${h>=12 ? 'pm' : 'am'}`;
+}
+
+function render(){
+  const { day, mins } = campusNow();
+  const today = HOURS[day];
+  const main = document.getElementById('statusText');
+  const mini = document.getElementById('statusMini');
+  const note = document.getElementById('statusNote');
+  const dots = [document.getElementById('dot'), document.getElementById('dotMini')];
+  let label, sub = '';
+
+  if (today && mins >= today[0] && mins < today[1]){
+    const left = today[1] - mins;
+    dots.forEach(d => d.classList.remove('shut'));
+    label = left <= 30 ? `Closing at ${clock(today[1])}` : `Open until ${clock(today[1])}`;
+    sub = left <= 30 ? `Last orders in about ${left} minutes.` : '';
+  } else {
+    dots.forEach(d => d.classList.add('shut'));
+    label = 'Closed right now';
+    let d = day, hops = 0;
+    while (hops < 8){
+      const h = HOURS[d];
+      if (h && (hops > 0 || mins < h[0])){
+        const when = hops === 0 ? 'today' : hops === 1 ? 'tomorrow' : DAYS[d];
+        label = `Closed · opens ${when} at ${clock(h[0])}`;
+        break;
+      }
+      d = (d + 1) % 7; hops++;
+    }
+  }
+
+  main.textContent = label;
+  mini.textContent = label;
+  note.innerHTML = sub || '&nbsp;';
+  document.querySelectorAll('.hrow').forEach(r => r.classList.toggle('today', Number(r.dataset.day) === day));
+}
+render();
+setInterval(render, 60000);
+
+/* ----------------------------- Search ----------------------------- */
+const q = document.getElementById('q');
+const empty = document.getElementById('empty');
+
+q.addEventListener('input', () => {
+  const term = q.value.trim().toLowerCase();
+  let hits = 0;
+
+  document.querySelectorAll('[data-block]').forEach(block => {
+    const heading = block.querySelector('h3').textContent.toLowerCase();
+    let shown = 0;
+
+    block.querySelectorAll('[data-item]').forEach(item => {
+      const name = item.querySelector('.n').textContent.toLowerCase();
+      const desc = item.querySelector('.d');
+      const hay = name + ' ' + (desc ? desc.textContent.toLowerCase() : '') + ' ' + heading;
+      const match = !term || hay.includes(term);
+      item.style.display = match ? '' : 'none';
+      if (match) shown++;
+    });
+
+    block.style.display = shown ? '' : 'none';
+    hits += shown;
+  });
+
+  empty.classList.toggle('on', hits === 0);
+});
+</script>
+</body>
+</html>
